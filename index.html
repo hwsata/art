@@ -1,77 +1,701 @@
-E html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Случайная картинка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Waifu Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-pink: #ff00ff;
+            --neon-purple: #9d00ff;
+        }
+        
         body {
-            background-color: black;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #0a0a1a;
+            font-family: 'Ubuntu Mono', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
+        
+        .title-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        .neon-border {
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue), 
+                        inset 0 0 10px var(--neon-blue);
+            border-radius: 15px;
+            animation: border-pulse 2s infinite alternate;
+        }
+        
+        .neon-text {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue), 
+                         0 0 10px var(--neon-blue);
+        }
+        
+        .neon-pink {
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--neon-pink), 
+                         0 0 10px var(--neon-pink);
+        }
+        
+        .neon-purple {
+            color: var(--neon-purple);
+            text-shadow: 0 0 5px var(--neon-purple), 
+                         0 0 10px var(--neon-purple);
+        }
+        
+        .neon-button {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neon-button:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 20px var(--neon-blue);
+            transform: translateY(-2px);
+        }
+        
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .neon-button:hover::before {
+            left: 100%;
+        }
+        
+        .neon-pink-button {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        .neon-pink-button:hover {
+            background: rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+        
+        .neon-pink-button::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.4), transparent);
+        }
+        
+        .neon-purple-button {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            text-shadow: 0 0 5px var(--neon-purple);
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+        
+        .neon-purple-button:hover {
+            background: rgba(157, 0, 255, 0.2);
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+        
+        .neon-purple-button::before {
+            background: linear-gradient(90deg, transparent, rgba(157, 0, 255, 0.4), transparent);
+        }
+        
+        @keyframes border-pulse {
+            0% {
+                box-shadow: 0 0 10px var(--neon-blue), 
+                            inset 0 0 10px var(--neon-blue);
+            }
+            100% {
+                box-shadow: 0 0 20px var(--neon-blue), 
+                            inset 0 0 20px var(--neon-blue);
+            }
+        }
+        
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 240, 255, 0.05) 50%,
+                transparent 100%
+            );
+            background-size: 100% 8px;
+            animation: scanline 8s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes scanline {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 100%;
+            }
+        }
+        
+        .corner-decoration {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--neon-blue);
+        }
+        
+        @media (min-width: 768px) {
+            .corner-decoration {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        
+        .corner-tl {
+            top: 10px;
+            left: 10px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .corner-tr {
+            top: 10px;
+            right: 10px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        .corner-bl {
+            bottom: 10px;
+            left: 10px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        .corner-br {
+            bottom: 10px;
+            right: 10px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        @media (min-width: 768px) {
+            .corner-tl, .corner-tr, .corner-bl, .corner-br {
+                top: 20px;
+                left: 20px;
+                right: 20px;
+                bottom: 20px;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.7;
+            }
+        }
+        
+        .category-btn {
+            transition: all 0.2s;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+        
+        @media (min-width: 768px) {
+            .category-btn {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+        }
+        
+        .category-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .active-category {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .category-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) transparent;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        @media (min-width: 1024px) {
+            .category-scroll {
+                max-height: none;
+                overflow-y: visible;
+            }
+        }
+        
+        .category-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .category-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .category-scroll::-webkit-scrollbar-thumb {
+            background-color: var(--neon-blue);
+            border-radius: 6px;
+        }
+        
+        .neon-tag {
+            border: 1px solid var(--neon-blue);
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            box-shadow: 0 0 5px var(--neon-blue);
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        
+        .glitch::before {
+            color: var(--neon-pink);
+            z-index: -1;
+            animation: glitch-effect 3s infinite;
+        }
+        
+        .glitch::after {
+            color: var(--neon-blue);
+            z-index: -2;
+            animation: glitch-effect 2s infinite reverse;
+        }
+        
+        @keyframes glitch-effect {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(2px, -2px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+        
+        .terminal-text {
+            position: relative;
+        }
+        
+        .terminal-text::after {
+            content: "|";
+            position: absolute;
+            right: -5px;
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
         .image-container {
-            text-align: center;
-            margin-bottom: 20px;
+            aspect-ratio: 4/3;
+            max-height: 70vh;
         }
-        .image-container img {
-            width: 400px;
-            height: 400px;
-            border-radius: 10px;
-            object-fit: cover;
+        
+        @media (min-width: 768px) {
+            .image-container {
+                aspect-ratio: 16/9;
+            }
         }
-        .btn-container {
-            text-align: center;
+        
+        /* Switch styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
         }
-        .btn-container button {
-            padding: 10px 20px;
-            font-size: 18px;
-            color: white;
-            border: 2px solid #800080;
-            border-radius: 4px;
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
             cursor: pointer;
-            background-color: transparent;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: .4s;
+            border-radius: 20px;
         }
-        .btn-container button:not(:last-child) {
-            margin-right: 10px;
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
         }
-        .btn-container button:hover {
-            border-color: #ff00ff;
+        
+        input:checked + .slider {
+            background-color: var(--neon-purple);
+        }
+        
+        input:disabled + .slider {
+            background-color: var(--neon-blue);
+            cursor: not-allowed;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
         }
     </style>
+</head>
+<body class="min-h-screen flex flex-col p-2 sm:p-4 md:p-6 lg:p-8">
+    <div class="grid-pattern"></div>
+    <div class="scanline"></div>
+    
+    <div class="corner-decoration corner-tl"></div>
+    <div class="corner-decoration corner-tr"></div>
+    <div class="corner-decoration corner-bl"></div>
+    <div class="corner-decoration corner-br"></div>
+    
+    <div class="text-center mb-3 sm:mb-6">
+        <h1 class="neon-text title-font text-xl sm:text-3xl md:text-4xl lg:text-5xl mb-2 sm:mb-4 glitch" data-text="WINSENT WAIFU GENERATOR">WINSENT WAIFU GENERATOR</h1>
+        <p class="neon-pink text-xs md:text-sm terminal-text">> INITIALIZING WAIFU DATABASE...</p>
+    </div>
+    
+    <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 w-full max-w-7xl mx-auto px-2 sm:px-4">
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col">
+            <div class="neon-border p-2 sm:p-3 md:p-4 mb-3 sm:mb-4 w-full">
+                <div id="image-container" class="image-container w-full flex items-center justify-center bg-black bg-opacity-70 rounded-lg overflow-hidden relative">
+                    <div class="text-center">
+                        <i class="fas fa-image neon-text text-3xl sm:text-4xl mb-2"></i>
+                        <p class="neon-text text-xs sm:text-sm">NO IMAGE LOADED</p>
+                    </div>
+                    <div id="category-tag" class="absolute bottom-1 sm:bottom-2 right-1 sm:right-2 neon-tag hidden">
+                        CATEGORY: <span id="current-category"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4 sm:mb-6">
+                <div class="neon-pink text-xs sm:text-sm mb-2 font-bold uppercase tracking-wider">
+                    <i class="fas fa-terminal mr-1 sm:mr-2"></i> ACTIONS
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                    <button onclick="getRandomImage()" class="neon-button px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm md:text-base flex-1">
+                        <i class="fas fa-random mr-1 sm:mr-2"></i> GENERATE RANDOM
+                    </button>
+                    <button onclick="saveImage()" class="neon-purple-button px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm md:text-base">
+                        <i class="fas fa-download mr-1 sm:mr-2"></i> DOWNLOAD
+                    </button>
+                </div>
+            </div>
+            
+            <div class="neon-border p-2 sm:p-3 md:p-4">
+                <div class="neon-text text-xs sm:text-sm mb-2 font-bold uppercase tracking-wider">
+                    <i class="fas fa-info-circle mr-1 sm:mr-2"></i> STATUS
+                </div>
+                <div class="grid grid-cols-2 gap-1 sm:gap-2 text-2xs sm:text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">API STATUS:</span>
+                        <span class="neon-pink">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">ACCESS KEY:</span>
+                        <span class="neon-text">************</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">SESSIONS:</span>
+                        <span class="neon-text">4,294</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">BANDWIDTH:</span>
+                        <span class="neon-text">2.7TB/4.0TB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Categories sidebar -->
+        <div class="lg:w-56 xl:w-64 flex flex-col mt-3 sm:mt-0">
+            <div class="neon-border p-2 sm:p-3 md:p-4 h-full">
+                <div class="neon-text text-xs sm:text-sm mb-3 sm:mb-4 font-bold uppercase tracking-wider">
+                    <i class="fas fa-list-ul mr-1 sm:mr-2"></i> WAIFU CATEGORIES
+                </div>
+                
+                <div class="category-scroll overflow-x-auto lg:overflow-x-visible mb-3 sm:mb-4">
+                    <div class="flex flex-wrap gap-1 sm:gap-2 lg:flex-col lg:gap-2 w-max lg:w-full">
+                        <button onclick="changeCategory('waifu')" class="neon-button category-btn active-category">waifu</button>
+                        <button onclick="changeCategory('neko')" class="neon-pink-button category-btn">neko</button>
+                        <button onclick="changeCategory('shinobu')" class="neon-button category-btn">shinobu</button>
+                        <button onclick="changeCategory('megumin')" class="neon-purple-button category-btn">megumin</button>
+                        <button onclick="changeCategory('bully')" class="neon-pink-button category-btn">bully</button>
+                        <button onclick="changeCategory('cuddle')" class="neon-button category-btn">cuddle</button>
+                        <button onclick="changeCategory('cry')" class="neon-pink-button category-btn">cry</button>
+                        <button onclick="changeCategory('hug')" class="neon-button category-btn">hug</button>
+                        <button onclick="changeCategory('awoo')" class="neon-purple-button category-btn">awoo</button>
+                        <button onclick="changeCategory('kiss')" class="neon-pink-button category-btn">kiss</button>
+                        <button onclick="changeCategory('lick')" class="neon-button category-btn">lick</button>
+                        <button onclick="changeCategory('pat')" class="neon-pink-button category-btn">pat</button>
+                        <button onclick="changeCategory('smug')" class="neon-button category-btn">smug</button>
+                        <button onclick="changeCategory('bonk')" class="neon-purple-button category-btn">bonk</button>
+                        <button onclick="changeCategory('yeet')" class="neon-pink-button category-btn">yeet</button>
+                        <button onclick="changeCategory('blush')" class="neon-button category-btn">blush</button>
+                        <button onclick="changeCategory('smile')" class="neon-pink-button category-btn">smile</button>
+                        <button onclick="changeCategory('wave')" class="neon-button category-btn">wave</button>
+                        <button onclick="changeCategory('highfive')" class="neon-purple-button category-btn">highfive</button>
+                        <button onclick="changeCategory('handhold')" class="neon-pink-button category-btn">handhold</button>
+                        <button onclick="changeCategory('nom')" class="neon-button category-btn">nom</button>
+                        <button onclick="changeCategory('bite')" class="neon-pink-button category-btn">bite</button>
+                        <button onclick="changeCategory('glomp')" class="neon-button category-btn">glomp</button>
+                        <button onclick="changeCategory('slap')" class="neon-purple-button category-btn">slap</button>
+                        <button onclick="changeCategory('kill')" class="neon-pink-button category-btn">kill</button>
+                        <button onclick="changeCategory('kick')" class="neon-button category-btn">kick</button>
+                        <button onclick="changeCategory('happy')" class="neon-pink-button category-btn">happy</button>
+                        <button onclick="changeCategory('wink')" class="neon-button category-btn">wink</button>
+                        <button onclick="changeCategory('poke')" class="neon-purple-button category-btn">poke</button>
+                        <button onclick="changeCategory('dance')" class="neon-pink-button category-btn">dance</button>
+                        <button onclick="changeCategory('cringe')" class="neon-button category-btn">cringe</button>
+                    </div>
+                </div>
+                
+                <div class="mt-4 sm:mt-6">
+                    <div class="neon-purple text-xs sm:text-sm mb-2 font-bold uppercase tracking-wider">
+                        <i class="fas fa-cog mr-1 sm:mr-2"></i> SETTINGS
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-2xs sm:text-xs">SFW MODE:</span>
+                        <label class="switch">
+                            <input type="checkbox" checked disabled>
+                            <span class="slider round bg-blue-500"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-2xs sm:text-xs">ANIMATIONS:</span>
+                        <label class="switch">
+                            <input type="checkbox" checked id="animations-toggle">
+                            <span class="slider round bg-purple-500"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="neon-text text-2xs sm:text-xs text-center opacity-70 mt-4 sm:mt-8">
+        <p>SYSTEM v1.1.0 WS EDITION | <span class="neon-pink">CONNECTION SECURE</span> | © 2025 WinsentSweet.ru.</p>
+    </div>
+    
     <script>
+        let currentCategory = 'waifu';
+        let currentImageUrl = '';
+        
+        function changeCategory(category) {
+            // Update active category
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active-category');
+                btn.classList.add('bg-transparent');
+            });
+            event.target.classList.add('active-category');
+            event.target.classList.remove('bg-transparent');
+            
+            // Update current category
+            currentCategory = category;
+            
+            // Add feedback animation
+            if(document.getElementById('animations-toggle').checked) {
+                event.target.classList.add('animate-pulse');
+                setTimeout(() => {
+                    event.target.classList.remove('animate-pulse');
+                }, 500);
+            }
+            
+            // Update terminal text
+            document.querySelector('.terminal-text').textContent = `> CATEGORY SET TO: ${category.toUpperCase()}`;
+            
+            // Get new image from this category
+            getRandomImage();
+        }
+        
         function getRandomImage() {
             var imageContainer = document.getElementById("image-container");
-
-            fetch("https://api.waifu.pics/sfw/waifu")
+            
+            // Show loading state
+            imageContainer.innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin neon-text text-3xl sm:text-4xl mb-2"></i>
+                    <p class="neon-text text-xs sm:text-sm">LOADING ${currentCategory.toUpperCase()}...</p>
+                </div>
+            `;
+            
+            // Hide category tag temporarily
+            document.getElementById('category-tag').classList.add('hidden');
+            
+            // Add glitch effect
+            if(document.getElementById('animations-toggle').checked) {
+                imageContainer.classList.add('opacity-70');
+                setTimeout(() => {
+                    imageContainer.classList.remove('opacity-70');
+                }, 300);
+            }
+            
+            // Fetch random image from selected category
+            fetch(`https://api.waifu.pics/sfw/${currentCategory}`)
                 .then(response => response.json())
                 .then(data => {
-                    var imageUrl = data.url;
-
-                    var image = new Image();
-                    image.src = imageUrl;
-
-                    imageContainer.innerHTML = "";
-                    imageContainer.appendChild(image);
+                    currentImageUrl = data.url;
+                    
+                    var img = document.createElement('img');
+                    img.src = currentImageUrl;
+                    img.className = 'w-full h-full object-cover';
+                    img.onload = () => {
+                        // Add success animation
+                        imageContainer.innerHTML = '';
+                        imageContainer.appendChild(img);
+                        
+                        // Show category tag
+                        document.getElementById('category-tag').classList.remove('hidden');
+                        document.getElementById('current-category').textContent = currentCategory.toUpperCase();
+                        
+                        if(document.getElementById('animations-toggle').checked) {
+                            imageContainer.classList.add('animate-pulse');
+                            setTimeout(() => {
+                                imageContainer.classList.remove('animate-pulse');
+                            }, 1000);
+                        }
+                        
+                        // Update terminal
+                        document.querySelector('.terminal-text').textContent = `> ${currentCategory.toUpperCase()} IMAGE LOADED SUCCESSFULLY`;
+                    };
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    console.log(error);
+                    imageContainer.innerHTML = `
+                        <div class="text-center">
+                            <i class="fas fa-exclamation-triangle neon-pink text-3xl sm:text-4xl mb-2"></i>
+                            <p class="neon-pink text-xs sm:text-sm">ERROR LOADING IMAGE</p>
+                        </div>
+                    `;
+                    
+                    // Update terminal
+                    document.querySelector('.terminal-text').textContent = `> ERROR: FAILED TO LOAD ${currentCategory.toUpperCase()}`;
+                });
         }
-
-        function goToHomePage() {
-            window.location.href = "https://hwsata.github.io/mew";
+        
+        function saveImage() {
+            if(!currentImageUrl) {
+                // Update terminal
+                document.querySelector('.terminal-text').textContent = '> ERROR: NO IMAGE TO DOWNLOAD';
+                return;
+            }
+            
+            // Create temporary anchor element
+            const link = document.createElement('a');
+            link.href = currentImageUrl;
+            link.download = `waifu-${currentCategory}-${Date.now()}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Update terminal
+            document.querySelector('.terminal-text').textContent = `> DOWNLOADING ${currentCategory.toUpperCase()} IMAGE...`;
         }
+        
+        // Initial animation
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelector('.terminal-text').textContent = '> SYSTEM READY | SELECT CATEGORY';
+            }, 1500);
+        });
+        
+        // Handle window resize for better mobile experience
+        window.addEventListener('resize', function() {
+            // Adjust category scroll height based on viewport
+            const categoryScroll = document.querySelector('.category-scroll');
+            if (window.innerWidth < 1024) {
+                // Mobile/tablet view
+                categoryScroll.style.maxHeight = '60vh';
+                categoryScroll.style.overflowY = 'auto';
+            } else {
+                // Desktop view
+                categoryScroll.style.maxHeight = 'none';
+                categoryScroll.style.overflowY = 'visible';
+            }
+        }, true);
+        
+        // Trigger resize event on load to set initial state
+        window.dispatchEvent(new Event('resize'));
     </script>
-</head>
-<body>
-    <div class="image-container" id="image-container">
-        <!-- Место для отображения картинки -->
-    </div>
-    <div class="btn-container">
-        <button class="random-button" onclick="getRandomImage()">Случайная картинка</button>
-        <button class="home-button" onclick="goToHomePage()">На главную</button>
-    </div>
 </body>
 </html>
